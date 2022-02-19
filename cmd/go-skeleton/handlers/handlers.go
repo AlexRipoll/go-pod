@@ -11,16 +11,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Run() {
+// MuxServer constructs and runs a new http.Handler with all the accessible routes.
+func MuxServer(dbConn *sql.DB) {
 
 	mux := http.NewServeMux()
 
-	// MySQL initialization
-	sqlDb, err := sql.Open("mysql", "admin:root@tcp(localhost:3306)/sample-project")
-	if err != nil {
-		log.Fatalf("mysql setup error: %v", err.Error())
-	}
-	mysql := db.NewMySQL(sqlDb)
+	mysql := db.NewMySQL(dbConn)
 
 	ugrp := usergrp.Handler{
 		User: user.NewCore(mysql),
