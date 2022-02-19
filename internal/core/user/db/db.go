@@ -5,15 +5,18 @@ import (
 	"database/sql"
 )
 
-type MySQL struct {
+// mysql manages the access to the database's methods.
+type mysql struct {
 	db *sql.DB
 }
 
-func NewMySQL(db *sql.DB) *MySQL {
-	return &MySQL{db: db}
+// NewMySQL initializes a new mysql struct to access to the database's methods.
+func NewMySQL(db *sql.DB) *mysql {
+	return &mysql{db: db}
 }
 
-func (mysql *MySQL) Add(ctx context.Context, u User) error {
+// Insert inserts a new User instance to the database
+func (mysql *mysql) Insert(ctx context.Context, u User) error {
 	const q = `
 	INSERT INTO users
 		(id, email, password_hash, roles, date_created, date_updated)

@@ -6,14 +6,17 @@ import (
 	"time"
 )
 
+// Core manages the access to the user's services.
 type Core struct {
 	db db.Repository
 }
 
+// NewCore initializes a new Core struct to access to the user's services.
 func NewCore(db db.Repository) Core {
 	return Core{db: db}
 }
 
+// Create creates a new user and inserts it to the database.
 func (c *Core) Create(ctx context.Context, nu NewUser) (*User, error) {
 	now := time.Now()
 
@@ -26,7 +29,7 @@ func (c *Core) Create(ctx context.Context, nu NewUser) (*User, error) {
 		DateUpdated:  now,
 	}
 
-	if err := c.db.Add(ctx, u); err != nil {
+	if err := c.db.Insert(ctx, u); err != nil {
 		return nil, err
 	}
 
