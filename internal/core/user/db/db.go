@@ -3,6 +3,9 @@ package db
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"fmt"
+	"github.com/AlexRipoll/go-skeleton/internal/sys/database"
 )
 
 // mysql manages the access to the database's methods.
@@ -23,13 +26,12 @@ func (mysql *mysql) Insert(ctx context.Context, u User) error {
 	VALUES
 		(?, ?, ?, ?, ?, ?);`
 
-	stmt, err := mysql.db.PrepareContext(ctx, q)
+	roles, err := json.Marshal(u.Roles)
 	if err != nil {
-		return err
+		return fmt.Errorf("error json marshal: %s", err.Error())
 	}
-	defer stmt.Close()
-
-	_, err = stmt.Exec()
+	// TODO improve
+	err = database.ExecStmt(ctx, mysql.db, q, u.ID, u.Email, string(u.PasswordHash),string(roles), u.DateCreated.String(), u.DateUpdated.String())
 	if err != nil {
 		return err
 	}
