@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "sample_project"
+      MYSQL_ROOT_PASSWORD: "root"
+    volumes:
+      - ./docker/volumes/mysql_data:/var/lib/mysql
