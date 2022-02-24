@@ -33,7 +33,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request)  {
 
 	u, err := h.User.Create(context.Background(), nu)
 	if err != nil {
-		w.WriteHeader(000)
+		w.WriteHeader(400)
 		w.Write([]byte(err.Error()))
 		return
 	}

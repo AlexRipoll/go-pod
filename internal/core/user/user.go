@@ -21,10 +21,10 @@ func (c *Core) Create(ctx context.Context, nu NewUser) (*User, error) {
 	now := time.Now()
 
 	u := db.User{
-		ID:           "uuid",
+		ID:           "uuid",				// TODO add uuid gen
 		Email:        nu.Email,
-		PasswordHash: nil,
-		Roles:        nil,
+		PasswordHash: []byte(nu.Password), 	// TODO hash password
+		Roles:        nu.Roles,
 		DateCreated:  now,
 		DateUpdated:  now,
 	}
