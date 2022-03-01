@@ -3,6 +3,8 @@ package user
 import (
 	"context"
 	"github.com/AlexRipoll/go-skeleton/internal/core/user/db"
+	"github.com/AlexRipoll/go-skeleton/internal/sys/validate"
+	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
@@ -20,10 +22,15 @@ func NewCore(db db.Repository) Core {
 func (c *Core) Create(ctx context.Context, nu NewUser) (*User, error) {
 	now := time.Now()
 
+	hash, err := bcrypt.GenerateFromPassword([]byte(nu.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+
 	u := db.User{
-		ID:           "uuid",				// TODO add uuid gen
+		ID:           validate.GenerateID(),
 		Email:        nu.Email,
-		PasswordHash: []byte(nu.Password), 	// TODO hash password
+		PasswordHash: hash,
 		Roles:        nu.Roles,
 		DateCreated:  now,
 		DateUpdated:  now,
