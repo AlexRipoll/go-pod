@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"database/sql"
-	"github.com/AlexRipoll/go-pod/cmd/go-skeleton/handlers/usergrp"
+	"github.com/AlexRipoll/go-pod/cmd/go-podd/handlers/usergrp"
 	"github.com/AlexRipoll/go-pod/internal/core/user"
 	"github.com/AlexRipoll/go-pod/internal/core/user/db"
 	"log"

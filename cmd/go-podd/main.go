@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/AlexRipoll/go-pod/cmd/go-skeleton/handlers"
+	"github.com/AlexRipoll/go-pod/cmd/go-podd/handlers"
 	"github.com/AlexRipoll/go-pod/internal/sys/database"
 	"log"
 )
