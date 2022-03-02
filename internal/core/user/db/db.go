@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/AlexRipoll/go-skeleton/internal/sys/database"
+	"github.com/AlexRipoll/go-pod/internal/sys/database"
 )
 
 // mysql manages the access to the database's methods.

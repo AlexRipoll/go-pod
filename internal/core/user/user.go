@@ -2,8 +2,8 @@ package user
 
 import (
 	"context"
-	"github.com/AlexRipoll/go-skeleton/internal/core/user/db"
-	"github.com/AlexRipoll/go-skeleton/internal/sys/validate"
+	"github.com/AlexRipoll/go-pod/internal/core/user/db"
+	"github.com/AlexRipoll/go-pod/internal/sys/validate"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )

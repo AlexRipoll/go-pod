@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/AlexRipoll/go-skeleton/cmd/go-skeleton/handlers"
-	"github.com/AlexRipoll/go-skeleton/internal/sys/database"
+	"github.com/AlexRipoll/go-pod/cmd/go-skeleton/handlers"
+	"github.com/AlexRipoll/go-pod/internal/sys/database"
 	"log"
 )
 
@@ -15,7 +15,7 @@ func main() {
 		Protocol: "tcp",
 		Host:     "127.0.0.1",
 		Port:     "3306",
-		Name:     "sample_project",
+		Name:     "pod_db",
 	}
 	// MySQL initialization
 	db, err := database.Open(cfg)

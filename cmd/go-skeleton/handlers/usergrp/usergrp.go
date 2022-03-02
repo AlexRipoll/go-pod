@@ -3,7 +3,7 @@ package usergrp
 import (
 	"context"
 	"encoding/json"
-	"github.com/AlexRipoll/go-skeleton/internal/core/user"
+	"github.com/AlexRipoll/go-pod/internal/core/user"
 	"io"
 	"net/http"
 )

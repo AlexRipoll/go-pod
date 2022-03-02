@@ -1,4 +1,4 @@
-module github.com/AlexRipoll/go-skeleton
+module github.com/AlexRipoll/go-pod
 
 go 1.17
 
