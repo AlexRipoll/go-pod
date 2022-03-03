@@ -9,3 +9,4 @@
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] Acceptance tests
+- [ ] CLI interaction
