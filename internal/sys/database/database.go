@@ -26,7 +26,7 @@ type Config struct {
 func Open(cfg Config) (*sql.DB, error) {
 	q := make(url.Values)
 	q.Set("charset", "utf8")
-	q.Set("parseTime", "True")
+	q.Set("parseTime", "true")
 	q.Set("loc", "Local")
 
 	u := url.URL{
@@ -66,11 +66,11 @@ func ExecStmt(ctx context.Context, db *sql.DB, query string, args ...interface{}
 	return nil
 }
 
-// ExecQuery is a helper function for executing queries that return a collection
+// ExecQueryStruct is a helper function for executing queries that return a single result
 // of data to be unmarshalled into a slice.
-func ExecQuery(ctx context.Context, db *sql.DB, target interface{}, query string, args ...string) error {
+func ExecQueryStruct(ctx context.Context, db *sql.DB, target interface{}, query string, args ...interface{}) error {
 	val := reflect.ValueOf(target)
-	if val.Kind() != reflect.Ptr || val.Elem().Kind() != reflect.Slice {
+	if val.Kind() != reflect.Ptr && val.Elem().Kind() != reflect.Slice {
 		return errors.New("must provide a pointer to a slice")
 	}
 
@@ -80,16 +80,80 @@ func ExecQuery(ctx context.Context, db *sql.DB, target interface{}, query string
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(args)
+	row := stmt.QueryRow(args...)
+
+	fields, err := argsScanner(stmt, target, args...)
 	if err != nil {
 		return err
 	}
 
-	slice := val.Elem()
-	for rows.Next() {
-		v := reflect.New(slice.Type().Elem())
-		//TODO autopopulate struct collection with reflection
-		slice.Set(reflect.Append(slice, v.Elem()))
+	if err := row.Scan(fields...); err != nil {
+		return err
 	}
+
 	return nil
+}
+
+// ExecQueryCollection is a helper function for executing queries that return a collection
+// of data to be unmarshalled into a slice.
+func ExecQueryCollection(ctx context.Context, db *sql.DB, target interface{}, query string, args ...interface{}) error {
+	val := reflect.ValueOf(target)
+	if val.Kind() != reflect.Ptr && val.Elem().Kind() != reflect.Slice {
+		return errors.New("must provide a pointer to a slice")
+	}
+
+	stmt, err := db.PrepareContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(args...)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		fields, err := argsScanner(stmt, target, args...)
+		if err != nil {
+			return err
+		}
+
+		if err := rows.Scan(fields...); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// argsScanner scans the struct and the query's fields and creates a slice of pointers containing
+// only the required fields by the query.
+func argsScanner(stmt *sql.Stmt, target interface{}, args ...interface{}) ([]interface{}, error) {
+	n := reflect.TypeOf(target).Elem().NumField()
+	rows, err := stmt.Query(args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	cols, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+
+	var fields []interface{}
+	for i := 0; i < n; i++ {
+		fieldAddr := reflect.ValueOf(target).Elem().Field(i).Addr().Interface()
+		fieldTag := reflect.TypeOf(target).Elem().Field(i).Tag.Get("db")
+
+		for _, col := range cols {
+			if string(fieldTag) == col {
+				fields = append(fields, fieldAddr)
+				break
+			}
+		}
+	}
+	return fields, nil
 }

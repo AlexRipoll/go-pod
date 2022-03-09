@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"github.com/AlexRipoll/go-pod/internal/core/user/db"
+	"github.com/AlexRipoll/go-pod/internal/sys/errorFlag"
 	"github.com/AlexRipoll/go-pod/internal/sys/validate"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -24,7 +25,7 @@ func (c *Core) Create(ctx context.Context, nu NewUser) (*User, error) {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(nu.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, err
+		return nil, errorFlag.New(err, errorFlag.Internal)
 	}
 
 	u := db.User{
@@ -40,8 +41,18 @@ func (c *Core) Create(ctx context.Context, nu NewUser) (*User, error) {
 		return nil, err
 	}
 
-	// TODO type conversion from db.User to User
-	uconv := User(u)
+	uconv := toUser(u)
 
 	return &uconv, nil
+}
+
+func toUser(u db.User) User {
+	return User{
+		ID:           u.ID,
+		Email:        u.Email,
+		PasswordHash: u.PasswordHash,
+		Roles:        u.Roles,
+		DateCreated:  u.DateCreated,
+		DateUpdated:  u.DateUpdated,
+	}
 }
