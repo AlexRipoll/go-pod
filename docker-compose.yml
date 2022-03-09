@@ -8,7 +8,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: "sample_project"
+      MYSQL_DATABASE: "pod_db"
       MYSQL_ROOT_PASSWORD: "root"
     volumes:
       - ./docker/volumes/mysql_data:/var/lib/mysql
