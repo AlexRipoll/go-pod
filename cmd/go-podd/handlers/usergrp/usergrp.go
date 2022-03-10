@@ -2,12 +2,10 @@ package usergrp
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"github.com/AlexRipoll/go-pod/internal/core/user"
 	"github.com/AlexRipoll/go-pod/internal/sys/errorFlag"
 	"github.com/AlexRipoll/go-pod/web"
-	"io"
 	"net/http"
 )
 
@@ -23,15 +21,8 @@ type Handler struct {
 func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
-	defer r.Body.Close()
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		web.ErrorResponse(ctx, w, errorFlag.New(errInternal, errorFlag.Internal))
-		return
-	}
-
 	var nu user.NewUser
-	if err := json.Unmarshal(body, &nu); err != nil {
+	if err := web.Decode(r, &nu); err != nil {
 		web.ErrorResponse(ctx, w, errorFlag.New(errInvalidData, errorFlag.InvalidData))
 		return
 	}
