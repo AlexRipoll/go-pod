@@ -1,8 +1,8 @@
 #### Pending tasks
 
-- [ ] Error wrapper
-- [ ] REST error handling
-- [ ] REST Request/Response parser
+- [x] Error wrapper
+- [x] REST error handling
+- [x] REST Request/Response parser
 - [ ] Logger
 - [ ] API versioning 
 - [ ] Database migrations
