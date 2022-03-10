@@ -3,8 +3,8 @@
 - [x] Error wrapper
 - [x] REST error handling
 - [x] REST Request/Response parser
+- [x] API versioning
 - [ ] Logger
-- [ ] API versioning 
 - [ ] Database migrations
 - [ ] Unit tests
 - [ ] Integration tests
