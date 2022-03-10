@@ -13,15 +13,14 @@ import (
 
 var (
 	errInvalidData = errors.New("invalid body provided")
-	errInternal = errors.New("internal server error")
+	errInternal    = errors.New("internal server error")
 )
 
 type Handler struct {
-	User user.Core 	
+	User user.Core
 }
 
-
-func (h Handler) Create(w http.ResponseWriter, r *http.Request)  {
+func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	defer r.Body.Close()

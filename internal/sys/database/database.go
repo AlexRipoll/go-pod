@@ -12,14 +12,14 @@ import (
 
 // Config contains the required parameters to configure a database connection
 type Config struct {
-	Driver string
-	Scheme string
-	User   string
+	Driver   string
+	Scheme   string
+	User     string
 	Password string
 	Protocol string
-	Host string
-	Port string
-	Name   string
+	Host     string
+	Port     string
+	Name     string
 }
 
 // Open opens a database connection with the given configuration parameters
@@ -30,15 +30,15 @@ func Open(cfg Config) (*sql.DB, error) {
 	q.Set("loc", "Local")
 
 	u := url.URL{
-		Scheme:      cfg.Scheme,
-		User:        url.UserPassword(cfg.User, cfg.Password),
-		Host:        fmt.Sprintf("%s(%s:%s)",cfg.Protocol, cfg.Host, cfg.Port),
-		Path:        cfg.Name,
-		RawQuery:    q.Encode(),
+		Scheme:   cfg.Scheme,
+		User:     url.UserPassword(cfg.User, cfg.Password),
+		Host:     fmt.Sprintf("%s(%s:%s)", cfg.Protocol, cfg.Host, cfg.Port),
+		Path:     cfg.Name,
+		RawQuery: q.Encode(),
 	}
 	fmt.Println(strings.Trim(u.String(), "/"))
 
-	db, err :=sql.Open(cfg.Driver, strings.Trim(u.String(), "/"))
+	db, err := sql.Open(cfg.Driver, strings.Trim(u.String(), "/"))
 	if err != nil {
 		return nil, err
 	}

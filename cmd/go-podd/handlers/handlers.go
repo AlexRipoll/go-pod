@@ -24,6 +24,5 @@ func MuxServer(dbConn *sql.DB) {
 
 	mux.Handle("/users", http.HandlerFunc(ugrp.Create))
 
-
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
