@@ -3,9 +3,17 @@ package usergrp
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/AlexRipoll/go-pod/internal/core/user"
+	"github.com/AlexRipoll/go-pod/internal/sys/errorFlag"
+	"github.com/AlexRipoll/go-pod/web"
 	"io"
 	"net/http"
+)
+
+var (
+	errInvalidData = errors.New("invalid body provided")
+	errInternal = errors.New("internal server error")
 )
 
 type Handler struct {
@@ -14,38 +22,28 @@ type Handler struct {
 
 
 func (h Handler) Create(w http.ResponseWriter, r *http.Request)  {
-	w.Header().Set("Content-Type", "application/json")
+	ctx := context.Background()
 
 	defer r.Body.Close()
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("invalid body provided"))
+		web.ErrorResponse(ctx, w, errorFlag.New(errInternal, errorFlag.Internal))
 		return
 	}
 
 	var nu user.NewUser
 	if err := json.Unmarshal(body, &nu); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("invalid body provided"))
+		web.ErrorResponse(ctx, w, errorFlag.New(errInvalidData, errorFlag.InvalidData))
 		return
 	}
 
 	u, err := h.User.Create(context.Background(), nu)
 	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte(err.Error()))
+		web.ErrorResponse(ctx, w, err)
 		return
 	}
 
-	resp, err := json.Marshal(u)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("internal server error"))
-		return
-	}
+	web.Response(ctx, w, u, http.StatusCreated)
 
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(resp))
 	return
 }
