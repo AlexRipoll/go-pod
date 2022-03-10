@@ -2,9 +2,7 @@ package handlers
 
 import (
 	"database/sql"
-	"github.com/AlexRipoll/go-pod/cmd/go-podd/handlers/usergrp"
-	"github.com/AlexRipoll/go-pod/internal/core/user"
-	"github.com/AlexRipoll/go-pod/internal/core/user/db"
+	v1 "github.com/AlexRipoll/go-pod/cmd/go-podd/handlers/v1"
 	"log"
 	"net/http"
 
@@ -16,13 +14,8 @@ func MuxServer(dbConn *sql.DB) {
 
 	mux := http.NewServeMux()
 
-	mysql := db.NewMySQL(dbConn)
-
-	ugrp := usergrp.Handler{
-		User: user.NewCore(mysql),
-	}
-
-	mux.Handle("/users", http.HandlerFunc(ugrp.Create))
+	// Load the v1 routes.
+	v1.Routes(mux, dbConn)
 
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
