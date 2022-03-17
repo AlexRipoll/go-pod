@@ -3,7 +3,9 @@ package main
 import (
 	"github.com/AlexRipoll/go-pod/cmd/go-podd/handlers"
 	"github.com/AlexRipoll/go-pod/internal/sys/database"
+	"github.com/AlexRipoll/go-pod/logger"
 	"log"
+	"os"
 )
 
 func main() {
@@ -22,7 +24,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("mysql setup error: %v", err.Error())
 	}
-	log.Printf(">> database connection established")
+	logger := logger.New(os.Stdout, logger.Default)
 
-	handlers.MuxServer(db)
+	logger.Info("database connection established")
+
+	handlers.MuxServer(db, logger)
 }

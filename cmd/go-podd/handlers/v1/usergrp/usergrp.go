@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/AlexRipoll/go-pod/internal/core/user"
 	"github.com/AlexRipoll/go-pod/internal/sys/errorFlag"
+	"github.com/AlexRipoll/go-pod/logger"
 	"github.com/AlexRipoll/go-pod/web"
 	"net/http"
 )
@@ -15,6 +16,7 @@ var (
 )
 
 type Handler struct {
+	Log *logger.Logger
 	User user.Core
 }
 
@@ -23,13 +25,13 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	var nu user.NewUser
 	if err := web.Decode(r, &nu); err != nil {
-		web.ErrorResponse(ctx, w, errorFlag.New(errInvalidData, errorFlag.InvalidData))
+		web.ErrorResponse(ctx, h.Log, w, errorFlag.New(errInvalidData, errorFlag.InvalidData))
 		return
 	}
 
 	u, err := h.User.Create(context.Background(), nu)
 	if err != nil {
-		web.ErrorResponse(ctx, w, err)
+		web.ErrorResponse(ctx, h.Log, w, err)
 		return
 	}
 

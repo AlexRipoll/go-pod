@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"encoding/json"
+	"github.com/AlexRipoll/go-pod/logger"
 	"net/http"
 )
 
@@ -33,9 +34,9 @@ func Response(ctx context.Context, w http.ResponseWriter, data interface{}, stat
 
 // ErrorResponse checks if the received error has errorFlag.flagged type, parses to JSON and
 // returns it to the client.
-func ErrorResponse(ctx context.Context, w http.ResponseWriter, error error) {
+func ErrorResponse(ctx context.Context, log *logger.Logger, w http.ResponseWriter, error error) {
 
-	errorData := ErrorMatch(error)
+	errorData := ErrorMatch(ctx, log, error)
 
 	jsonData, err := json.Marshal(errorData)
 	if err != nil {
